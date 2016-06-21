@@ -20,13 +20,13 @@ class ZMQ_handler(logging.Handler):
         self.socket = Msg_Dispatcher(ctx,ipc_pub_url)
 
     def emit(self, record):
-        self.socket.send('logging.%s'%str(record.levelname).lower(),record)
+        self.socket.send('logging.%s'%str(record.levelname).lower(),record.__dict__)
 
 class ZMQ_Actor(object):
     '''
     Abstract class to unify initilization of Msg_Receiver, Msg_Dispatcher and Requester
     '''
-    def __init__(self,ctx,socket_type,url,block_unitl_connected=True):
+    def __init__(self,ctx,url,socket_type,block_unitl_connected=True):
         super(ZMQ_Actor, self).__init__()
         self.socket = zmq.Socket(ctx,socket_type)
         if block_unitl_connected:
@@ -45,6 +45,8 @@ class ZMQ_Actor(object):
         else:
             self.socket.connect(url)
 
+    def __del__(self):
+        self.socket.close()
 
 class Msg_Receiver(ZMQ_Actor):
     '''
@@ -54,7 +56,7 @@ class Msg_Receiver(ZMQ_Actor):
     '''
     def __init__(self,ctx,url,topics = (),block_unitl_connected=True):
         assert type(topics) != str
-        super(Msg_Receiver, self).__init__(ctx,zmq.SUB,url,block_unitl_connected)
+        super(Msg_Receiver, self).__init__(ctx,url,zmq.SUB,block_unitl_connected)
         for t in topics:
             self.subscribe(t)
 
@@ -76,17 +78,14 @@ class Msg_Receiver(ZMQ_Actor):
     def new_data(self):
         return self.socket.get(zmq.EVENTS)
 
-    def __del__(self):
-        self.socket.close()
 
-
-class Msg_Dispatcher(ZMQ_Actor):
+class Msg_Streamer(ZMQ_Actor):
     '''
     Send messages on a pub port.
     Not threadsave. Make a new one for each thread
     '''
-    def __init__(self,ctx,url,block_unitl_connected=True):
-        super(Msg_Dispatcher, self).__init__(ctx,zmq.PUB,url,block_unitl_connected)
+    def __init__(self,ctx,url,socket_type=zmq.PUB,block_unitl_connected=True):
+        super(Msg_Streamer, self).__init__(ctx,url,socket_type,block_unitl_connected)
 
     def send(self,topic,payload):
         '''
@@ -94,6 +93,14 @@ class Msg_Dispatcher(ZMQ_Actor):
         '''
         self.socket.send(str(topic),flags=zmq.SNDMORE)
         self.socket.send(serializer.dumps(payload))
+
+class Msg_Dispatcher(Msg_Streamer):
+    '''
+    Send messages on a push port.
+    Not threadsave. Make a new one for each thread
+    '''
+    def __init__(self,ctx,url,block_unitl_connected=True):
+        super(Msg_Dispatcher, self).__init__(ctx,url,zmq.PUSH,block_unitl_connected)
 
     def notify(self,notification):
         '''
@@ -107,16 +114,12 @@ class Msg_Dispatcher(ZMQ_Actor):
         else:
             self.send("notify.%s"%notification['subject'],notification)
 
-
-    def __del__(self):
-        self.socket.close()
-
 class Requester(ZMQ_Actor):
     """
     Send commands or notifications to Pupil Remote
     """
     def __init__(self, ctx, url, block_unitl_connected=True):
-        super(Requester, self).__init__(ctx,zmq.REQ,url,block_unitl_connected)
+        super(Requester, self).__init__(ctx,url,zmq.REQ,block_unitl_connected)
 
     def send_cmd(self,cmd):
         self.socket.send(cmd)
@@ -127,8 +130,6 @@ class Requester(ZMQ_Actor):
         payload = serializer.dumps(notification)
         self.socket.send_multipart((topic,payload))
         return self.socket.recv()
-    def __del__(self):
-        self.socket.close()
 
 if __name__ == '__main__':
     from time import sleep,time
@@ -187,5 +188,3 @@ if __name__ == '__main__':
     # # listen to all log messages.
     # while True:
     #     print log_monitor.recv()
-
-
