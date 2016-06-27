@@ -62,17 +62,19 @@ while True:
 Simple class to interface with Pupil applications. Connects to `Pupil Remote`, asks for `SUB_PORT` and creates two `zmq_tools.Msg_Receiver` to subscribe to notifications and other data.
 
 Args:
-    - `ctx (zmq.Context,optional)`: zmq context
-    - `address (str, optional)`: Remote address
-    - `req_port (int, optional)`: Remote request port
-    - `block_unitl_connected (boolean, optional)`: Block until connected
+
+- `ctx (zmq.Context,optional)`: zmq context
+- `address (str, optional)`: Remote address
+- `req_port (int, optional)`: Remote request port
+- `block_unitl_connected (boolean, optional)`: Block until connected
 
 
 **`Communicator.startRecording()`**
 Starts recording session.
 
 Args:
-    - `session_name (str, optional)`: Name for the recording session
+
+- `session_name (str, optional)`: Name for the recording session
 
 
 **`Communicator.stopRecording()`**
@@ -91,59 +93,68 @@ Stops calibration procedure.
 Send a notification to the remote Pupil application.
 
 Args:
-    - `notification (dict)`: Notification dictionary containing at least the `subject` key.
+
+- `notification (dict)`: Notification dictionary containing at least the `subject` key.
 
 
 **`Communicator.subscribe()`**
 Subscribes to `topic`.
 Args:
-    - `topic (str)`: Subscription topic
+
+- `topic (str)`: Subscription topic
 
 
 **`Communicator.unsubscribe()`**
 Unubscribes from `topic`.
 Args:
-    - `topic (str)`
+
+- `topic (str)`
 
 
 **`Communicator.addCallbackForEvents()`**
 Registers a callback for a given list of events and automatically subscribes to the events in `events`.
 
 Args:
-    - `callback (function)`: function which takes two arguments, event and data
-    - `events (string list)`: list of events
+
+- `callback (function)`: function which takes two arguments, event and data
+- `events (string list)`: list of events
 
 
 **`Communicator.removeCallbackForEvents()`**
 Unregisters a callback for a given list of events and automatically unsubscribes from the events in `events`.
 
 Args:
-    - `callback (function)`: function which takes two arguments, event and data
-    - `events (string list)`: list of events
+
+- `callback (function)`: function which takes two arguments, event and data
+- `events (string list)`: list of events
 
 
 **`Communicator.callCallbacksForEvents()`**
 Executes all registered callbacks matching `events`.
 
 Args:
-    - `events (dict)`: Dictionary with topic-data entries, e.g. returned by `pollEventsOnce()`.
+
+- `events (dict)`: Dictionary with topic-data entries, e.g. returned by `pollEventsOnce()`.
 
 
 **`Communicator.pollEventsOnce()`**
 Used by ``checkEvents()``, `` waitAnyEvent()``, and ``waitAllEvents()`` for polling events.
 
 Args:
-    - `timeout (None, optional)`: Poll timeout
+
+- `timeout (None, optional)`: Poll timeout
 
 Returns:
-    - `dictionary`: Contains topic-payload entries
+
+- `dictionary`: Contains topic-payload entries
 
 
 **`Communicator.checkEvents()`**
 Checks for all available events. Returns after execution of respective callbacks.
 
 Returns:
-    - `dictionary`: Returns events in a dictionary, where the key is the
+
+- `dictionary`: Returns events in a dictionary, where the key is the
         event and the value its most recent payload
 
 
@@ -151,12 +162,14 @@ Returns:
 Blocks until one or all events in ``looking_for`` were encountered. Returns after execution of respective callbacks.
 
 Args:
-    - `wait_for_all (boolean)`: Specifies if all `events` need to occure before exiting.
-    - `looking_for (string array)`: List of event names
-    - `timeout (float, optional)`: Timeout in milliseconds.
+
+- `wait_for_all (boolean)`: Specifies if all `events` need to occure before exiting.
+- `looking_for (string array)`: List of event names
+- `timeout (float, optional)`: Timeout in milliseconds.
 
 Returns:
-    - `dictionary`: Contains topic-data entries
+
+- `dictionary`: Contains topic-data entries
 
 
 **`Communicator.waitAnyEvent()`**
