@@ -58,7 +58,7 @@ while True:
 
 ## Pupil Interface API Reference
 
-**`Communicator()`**
+#### `Communicator()`
 Simple class to interface with Pupil applications. Connects to `Pupil Remote`, asks for `SUB_PORT` and creates two `zmq_tools.Msg_Receiver` to subscribe to notifications and other data.
 
 Args:
@@ -69,7 +69,7 @@ Args:
 - `block_unitl_connected (boolean, optional)`: Block until connected
 
 
-**`Communicator.startRecording()`**
+#### `Communicator.startRecording()`
 Starts recording session.
 
 Args:
@@ -77,19 +77,19 @@ Args:
 - `session_name (str, optional)`: Name for the recording session
 
 
-**`Communicator.stopRecording()`**
+#### `Communicator.stopRecording()`
 Stops recording session.
 
 
-**`Communicator.startCalibration()`**
+#### `Communicator.startCalibration()`
 Starts calibration procedure.
 
 
-**`Communicator.stopCalibration()`**
+#### `Communicator.stopCalibration()`
 Stops calibration procedure.
 
 
-**`Communicator.notify()`**
+#### `Communicator.notify()`
 Send a notification to the remote Pupil application.
 
 Args:
@@ -97,21 +97,21 @@ Args:
 - `notification (dict)`: Notification dictionary containing at least the `subject` key.
 
 
-**`Communicator.subscribe()`**
+#### `Communicator.subscribe()`
 Subscribes to `topic`.
 Args:
 
 - `topic (str)`: Subscription topic
 
 
-**`Communicator.unsubscribe()`**
+#### `Communicator.unsubscribe()`
 Unubscribes from `topic`.
 Args:
 
 - `topic (str)`
 
 
-**`Communicator.addCallbackForEvents()`**
+#### `Communicator.addCallbackForEvents()`
 Registers a callback for a given list of events and automatically subscribes to the events in `events`.
 
 Args:
@@ -120,7 +120,7 @@ Args:
 - `events (string list)`: list of events
 
 
-**`Communicator.removeCallbackForEvents()`**
+#### `Communicator.removeCallbackForEvents()`
 Unregisters a callback for a given list of events and automatically unsubscribes from the events in `events`.
 
 Args:
@@ -129,7 +129,7 @@ Args:
 - `events (string list)`: list of events
 
 
-**`Communicator.callCallbacksForEvents()`**
+#### `Communicator.callCallbacksForEvents()`
 Executes all registered callbacks matching `events`.
 
 Args:
@@ -137,7 +137,7 @@ Args:
 - `events (dict)`: Dictionary with topic-data entries, e.g. returned by `pollEventsOnce()`.
 
 
-**`Communicator.pollEventsOnce()`**
+#### `Communicator.pollEventsOnce()`
 Used by ``checkEvents()``, `` waitAnyEvent()``, and ``waitAllEvents()`` for polling events.
 
 Args:
@@ -149,7 +149,7 @@ Returns:
 - `dictionary`: Contains topic-payload entries
 
 
-**`Communicator.checkEvents()`**
+#### `Communicator.checkEvents()`
 Checks for all available events. Returns after execution of respective callbacks.
 
 Returns:
@@ -158,7 +158,7 @@ Returns:
         event and the value its most recent payload
 
 
-**`Communicator.waitForEvents()`**
+#### `Communicator.waitForEvents()`
 Blocks until one or all events in ``looking_for`` were encountered. Returns after execution of respective callbacks.
 
 Args:
@@ -172,9 +172,9 @@ Returns:
 - `dictionary`: Contains topic-data entries
 
 
-**`Communicator.waitAnyEvent()`**
+#### `Communicator.waitAnyEvent()`
 Calls `waitForEvents()` with `wait_for_all = False`.
 
 
-**`Communicator.waitAllEvents()`**
+#### `Communicator.waitAllEvents()`
 Calls `waitForEvents()` with `wait_for_all = True`.
